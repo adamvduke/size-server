@@ -14,3 +14,8 @@ docker-compose.yml and a separate instance running on the host as a client
 making increasingly larger requests to understand the behavior of the reverse
 proxy when the response size crosses the boundary set by the `maxResponseBodyBytes`
 of the proxy.
+
+## Logs
+The logs named `processed-log-{number}.txt` are named with the value of the
+`maxResponseBodyBytes` that was used when collecting the given log, e.g.
+`processed-log-2000.txt` means `maxResponseBodyBytes` was set to 2000 at the time.

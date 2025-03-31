@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -25,14 +26,19 @@ func main() {
 		work := make(chan int)
 		for i := 0; i < 1; i++ {
 			go func(w chan int) {
+				c := &http.Client{}
 				for {
 					i := <-w
 					u := fmt.Sprintf("http://size.docker.localhost:80/?size=%d", i)
-					resp, err := http.Get(u)
+					resp, err := c.Get(u)
 					if err != nil {
 						logger.Println(err)
 					}
-					logger.Printf("Requested size: %v, Status: %v, Length: %v", i, resp.Status, resp.ContentLength)
+					b, err := io.ReadAll(resp.Body)
+					if err != nil {
+						logger.Println(err)
+					}
+					logger.Printf("Requested size: %v, Status: %v, Length: %v", i, resp.Status, len(b))
 				}
 			}(work)
 		}

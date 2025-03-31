@@ -15,6 +15,7 @@ func main() {
 	client := flag.Bool("client", false, "if the program should run as a client rather than server")
 	start := flag.Int("start", 1, "initial request size")
 	batchSize := flag.Int("batch", 10000, "how many requests to make")
+	workers := flag.Int("workers", 5, "number of workers to spawn")
 	flag.Parse()
 
 	file, err := os.OpenFile("log.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
@@ -24,7 +25,7 @@ func main() {
 	logger := log.New(file, "", log.LstdFlags)
 	if *client {
 		work := make(chan int)
-		for i := 0; i < 1; i++ {
+		for range *workers {
 			go func(w chan int) {
 				c := &http.Client{}
 				for {
